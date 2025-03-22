@@ -1,6 +1,7 @@
 {
 	"name": "@rbxts/vide-charm",
 	"version": "0.3.0",
+	"private": true,
 	"description": "Vide bindings for Charm",
 	"repository": "littensy/charm",
 	"license": "MIT",

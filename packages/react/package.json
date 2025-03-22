@@ -1,6 +1,7 @@
 {
 	"name": "@rbxts/react-charm",
 	"version": "0.3.0",
+	"private": true,
 	"description": "React bindings for Charm",
 	"repository": "littensy/charm",
 	"license": "MIT",

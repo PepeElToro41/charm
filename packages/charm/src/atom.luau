@@ -10,9 +10,7 @@ type AtomOptions<T> = types.AtomOptions<T>
 	@param options Optional configuration.
 	@return A new atom.
 ]=]
-local function atom<T>(state: T, options: AtomOptions<T>?): Atom<T>
-	local equals = options and options.equals
-
+local function atom<T>(state: T, dispatchers: AtomOptions<T>?): Atom<T>
 	local function atom(...)
 		if select("#", ...) == 0 then
 			local index = store.capturing.index
@@ -26,7 +24,7 @@ local function atom<T>(state: T, options: AtomOptions<T>?): Atom<T>
 
 		local nextState = store.peek(..., state)
 
-		if state ~= nextState and not (equals and equals(state, nextState)) then
+		if state ~= nextState then
 			state = nextState
 			store.notify(atom)
 		end
@@ -35,6 +33,21 @@ local function atom<T>(state: T, options: AtomOptions<T>?): Atom<T>
 	end
 
 	store.listeners[atom] = setmetatable({}, { __mode = "v" })
+
+	if dispatchers then
+		local injections = {}
+		for name, callback in pairs(dispatchers) do
+			injections[name] = function(...)
+				local args = { ... }
+				return atom(function(old)
+					return callback(old, unpack(args))
+				end)
+			end
+		end
+		return setmetatable(injections, {
+			__call = atom,
+		}) :: Atom<T> & { [string]: (state: T, ...any) -> T }
+	end
 
 	return atom
 end

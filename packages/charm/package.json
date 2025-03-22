@@ -1,5 +1,5 @@
 {
-	"name": "@rbxts/charm",
+	"name": "@rbxts/charm-dispatchers",
 	"version": "0.10.0",
 	"description": "An atomic state management library for Roblox",
 	"repository": "littensy/charm",

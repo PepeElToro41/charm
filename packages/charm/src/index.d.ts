@@ -31,6 +31,10 @@ declare namespace Charm {
 	 * @returns The current state.
 	 */
 	type Molecule<State> = Selector<State>;
+	type Dispatchers<State = any> = Record<string, (state: State, ...args: any) => State>;
+	type DispatchActions<T extends Dispatchers> = {
+		[K in keyof T]: T[K] extends (state: any, ...args: infer A) => infer R ? (...args: A) => R : never;
+	};
 
 	/**
 	 * Infers the type of the state produced by the given function.
@@ -52,10 +56,13 @@ declare namespace Charm {
 	 * @param options Optional configuration.
 	 * @returns A new atom.
 	 */
-	function atom<State>(state: State, options?: AtomOptions<State>): Atom<State>;
+	function atom<T>(state: T): Atom<T>;
 
 	// Overload for no arguments
-	function atom<State>(state?: State, options?: AtomOptions<State>): Atom<State | undefined>;
+	function atom<T>(state?: T): Atom<T | undefined>;
+
+	// Overload for dispatchers
+	function atom<T, D extends Dispatchers<T>>(state: T, dispatchers: D): Atom<T> & DispatchActions<D>;
 
 	/**
 	 * Creates a read-only atom that derives its state from one or more atoms.
