@@ -2,7 +2,7 @@
 	"name": "@rbxts/charm-with-dispatchers",
 	"version": "0.0.1",
 	"description": "An atomic state management library for Roblox",
-	"repository": "littensy/charm",
+	"repository": "PepeElToro41/charm",
 	"license": "MIT",
 	"main": "src/init.luau",
 	"types": "src/index.d.ts",
