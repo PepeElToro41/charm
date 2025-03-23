@@ -4,7 +4,7 @@
 		"build": "sh bin/build.sh",
 		"check": "sh bin/check.sh",
 		"wally": "sh bin/install.sh",
-		"publish:npm": "pnpm publish -r --access public",
+		"publish:npm": "pnpm publish -r",
 		"publish:wally": "pnpm -r --workspace-concurrency 1 publish:wally"
 	},
 	"devDependencies": {
