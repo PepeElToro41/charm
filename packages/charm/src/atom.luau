@@ -2,6 +2,9 @@ local store = require(script.Parent.store)
 local types = require(script.Parent.types)
 type Atom<T> = types.Atom<T>
 type AtomOptions<T> = types.AtomOptions<T>
+type AtomDispatchers<T> = {
+	[string]: (state: T, ...any) -> T,
+}
 
 --[=[
 	Creates a new atom with the given state.
@@ -10,8 +13,9 @@ type AtomOptions<T> = types.AtomOptions<T>
 	@param options Optional configuration.
 	@return A new atom.
 ]=]
-local function atom<T>(state: T, dispatchers: AtomOptions<T>?): Atom<T>
+local function atom<T>(state: T, dispatchers: AtomDispatchers<T>?): Atom<T> & { [string]: (...any) -> () }
 	local function atom(...)
+		print("CALL ", ...)
 		if select("#", ...) == 0 then
 			local index = store.capturing.index
 
@@ -28,7 +32,7 @@ local function atom<T>(state: T, dispatchers: AtomOptions<T>?): Atom<T>
 			state = nextState
 			store.notify(atom)
 		end
-
+		print("CALLED", atom)
 		return state
 	end
 
@@ -45,11 +49,13 @@ local function atom<T>(state: T, dispatchers: AtomOptions<T>?): Atom<T>
 			end
 		end
 		return setmetatable(injections, {
-			__call = atom,
-		}) :: Atom<T> & { [string]: (state: T, ...any) -> T }
+			__call = function(self, ...)
+				return atom(...)
+			end,
+		}) :: any
 	end
 
-	return atom
+	return atom :: any
 end
 
 return atom
