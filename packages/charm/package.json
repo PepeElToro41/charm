@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/charm-with-dispatchers",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "An atomic state management library for Roblox",
 	"repository": "PepeElToro41/charm",
 	"license": "MIT",
