@@ -15,7 +15,6 @@ type AtomDispatchers<T> = {
 ]=]
 local function atom<T>(state: T, dispatchers: AtomDispatchers<T>?): Atom<T> & { [string]: (...any) -> () }
 	local function atom(...)
-		print("CALL ", ...)
 		if select("#", ...) == 0 then
 			local index = store.capturing.index
 
@@ -32,7 +31,6 @@ local function atom<T>(state: T, dispatchers: AtomDispatchers<T>?): Atom<T> & { 
 			state = nextState
 			store.notify(atom)
 		end
-		print("CALLED", atom)
 		return state
 	end
 
