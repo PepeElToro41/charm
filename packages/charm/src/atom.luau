@@ -47,6 +47,7 @@ local function atom<T>(state: T, dispatchers: AtomDispatchers<T>?): Atom<T> & { 
 			end
 		end
 		return setmetatable(injections, {
+			type = store.atomProxy,
 			__call = function(self, ...)
 				return atom(...)
 			end,

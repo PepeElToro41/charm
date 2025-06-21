@@ -9,6 +9,7 @@ local listeners: WeakMap<Atom<any>, WeakMap<() -> (), unknown>> = setmetatable({
 
 local batched: Set<() -> ()> = {}
 local batching = false
+local atomProxy = newproxy()
 
 local capturing = {
 	stack = {} :: { Set<Atom<any>> },
@@ -108,17 +109,25 @@ end
 ]=]
 local function peek<T, U...>(callback: ((U...) -> T) | T, ...: U...): T
 	if type(callback) ~= "function" then
-		return callback
+		local mt = getmetatable(callback :: any)
+		if not mt then
+			return callback
+		end
+		if mt.type ~= atomProxy then
+			return callback
+		end
 	end
 
+	local selector = callback :: (U...) -> T
+
 	if capturing.index == 0 then
-		return callback(...)
+		return selector(...)
 	end
 
 	capturing.index += 1
 	capturing.stack[capturing.index] = {}
 
-	local result = try(callback, function()
+	local result = try(selector, function()
 		capturing.stack[capturing.index] = nil
 		capturing.index -= 1
 	end, ...)
@@ -204,6 +213,7 @@ end
 return {
 	listeners = listeners,
 	capturing = capturing,
+	atomProxy = atomProxy,
 	isAtom = isAtom,
 	notify = notify,
 	capture = capture,

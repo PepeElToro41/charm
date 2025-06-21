@@ -41,4 +41,26 @@ return function()
 		expect(a()).to.equal(6)
 		expect(called).to.equal(5)
 	end)
+	it("can use peek in modified atoms", function()
+		local a = atom(10, {
+			add = function(state, value)
+				return state
+			end,
+		})
+		expect(Charm.peek(a)).to.equal(10)
+	end)
+	it("can use subscribe in modified atoms", function()
+		local a = atom(10, {
+			add = function(state, value)
+				return state + value
+			end,
+		})
+		local updated = -1
+		local disconnect = Charm.subscribe(a, function(state)
+			updated = state
+		end)
+		a.add(10)
+		expect(updated).to.equal(20)
+		disconnect()
+	end)
 end

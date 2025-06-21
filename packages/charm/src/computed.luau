@@ -13,9 +13,9 @@ type Selector<T> = types.Selector<T>
 	@param options Optional configuration.
 	@return A new read-only atom.
 ]=]
-local function computed<T>(callback: Selector<T>, options: AtomOptions<T>?): Selector<T>
+local function computed<T>(callback: Selector<T>): Selector<T>
 	local dependencies, state = store.capture(callback)
-	local computedAtom = atom(state, options)
+	local computedAtom = atom(state)
 	local computedRef = setmetatable({ current = computedAtom }, { __mode = "v" })
 
 	local function listener()
